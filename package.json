@@ -7,7 +7,7 @@
     "build": "vue-cli-service build --target lib --name brewblox-plugin ./src/components/index.js && cp -rf dist/* out/",
     "lint": "vue-cli-service lint"
   },
-  "main": "./out/brewblox-plugin.common.js",
+  "main": "./out/brewblox-plugin.umd.js",
   "dependencies": {
     "core-js": "^2.6.5",
     "vue": "^2.6.10"
