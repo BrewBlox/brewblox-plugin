@@ -1,13 +1,19 @@
 {
   "name": "brewblox-plugin",
   "version": "0.1.0",
-  "private": true,
+  "main": "out/brewblox-plugin.umd.js",
+  "files": [
+    "out/*",
+    "src/*",
+    "public/*",
+    "*.json",
+    "*.js"
+  ],
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name brewblox-plugin ./src/components/index.js && cp -rf dist/* out/",
+    "build": "vue-cli-service build --target lib --name brewblox-plugin ./src/index.js && cp -rf dist/* out/",
     "lint": "vue-cli-service lint"
   },
-  "main": "./out/brewblox-plugin.umd.js",
   "dependencies": {
     "core-js": "^2.6.5",
     "vue": "^2.6.10"
@@ -20,15 +26,9 @@
     "babel-eslint": "^10.0.1",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "express": "^4.17.1",
     "vue-template-compiler": "^2.6.10"
   },
-  "files": [
-    "out/*",
-    "src/*",
-    "public/*",
-    "*.json",
-    "*.js"
-  ],
   "eslintConfig": {
     "root": true,
     "env": {

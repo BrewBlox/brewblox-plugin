@@ -1,4 +1,4 @@
-import PluginWizard from "./PluginWizard.vue";
+import PluginWizard from "./components/PluginWizard.vue";
 
 const components = {
   PluginWizard
@@ -8,11 +8,11 @@ const components = {
 // This is used by the application to manage and create widgets
 const feature = {
   // The ID must be unique, and is used by dashboard items to declare their type
-  id: "ExampleFeature",
+  id: "PluginExample",
 
   // The display name is how the feature is described to the user
   // eg. when selecting a new widget to create, and in the widget title bar
-  displayName: "Example Feature",
+  displayName: "Plugin Example",
 
   /*
     The ref() helper function registers the Vue component by name, and then returns the name
