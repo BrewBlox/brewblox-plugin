@@ -1,8 +1,5 @@
 import PluginWizard from "./components/PluginWizard.vue";
-
-const components = {
-  PluginWizard
-};
+import PluginWidget from "./components/PluginWidget.vue";
 
 // Define a feature here
 // This is used by the application to manage and create widgets
@@ -66,9 +63,8 @@ const feature = {
 
 export default {
   install(Vue, { store }) {
-    Object.entries(components).forEach(([name, cmp]) =>
-      Vue.component(name, cmp)
-    );
+    Vue.component(PluginWizard.name, PluginWizard);
+    Vue.component(PluginWidget.name, PluginWidget);
 
     store.dispatch("features/createFeature", feature);
   }

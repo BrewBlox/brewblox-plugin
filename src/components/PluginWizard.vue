@@ -1,9 +1,23 @@
 <script>
+import uuid from "uuid/v4";
+
 export default {
   name: "PluginWizard",
   props: {
     featureId: String,
     dashboardId: String
+  },
+  computed: {
+    displayName() {
+      return this.$store.getters["features/displayNameById"](
+        this.$props.featureId
+      );
+    },
+    defaultWidgetSize() {
+      return this.$store.getters["features/widgetSizeById"](
+        this.$props.featureId
+      );
+    }
   },
   data: () => ({
     widgetTitle: ""
@@ -15,13 +29,38 @@ export default {
     close() {
       this.$emit("close");
     },
-    createWidget() {}
+    createWidget() {
+      this.$store
+        .dispatch("dashboards/appendDashboardItem", {
+          id: uuid(),
+          title: this.widgetTitle,
+          feature: this.featureId,
+          dashboard: this.dashboardId,
+          order: 0, // automatically set by appendDashboardItem
+          config: {
+            url: "https://www.google.com"
+          },
+          ...this.defaultWidgetSize
+        })
+        .then(() =>
+          this.$q.notify({
+            icon: "mdi-check-all",
+            color: "positive",
+            message: `Created ${this.displayName} '${this.widgetTitle}'`
+          })
+        )
+        .catch(e =>
+          this.$q.notify({
+            icon: "error",
+            color: "negative",
+            message: `Failed to create widget: ${e.toString()}`
+          })
+        )
+        .finally(this.close);
+    }
   },
   created() {
-    console.log(this.$store);
-    this.widgetTitle = this.$store.getters["features/displayNameById"](
-      this.$props.featureId
-    );
+    this.widgetTitle = this.displayName;
   }
 };
 </script>
