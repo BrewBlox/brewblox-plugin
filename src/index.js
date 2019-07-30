@@ -1,27 +1,18 @@
-import PluginWizard from "./components/PluginWizard.vue";
-import PluginWidget from "./components/PluginWidget.vue";
+import PluginWizard from "./PluginWizard.vue";
+import PluginWidget from "./PluginWidget.vue";
 
-// Define a feature here
-// This is used by the application to manage and create widgets
+// The definition for the feature added by this plugin
+// You can find the Typescript interface in
+// https://github.com/BrewBlox/brewblox-ui/blob/develop/src/store/features/index.ts
 const feature = {
   // The ID must be unique, and is used by dashboard items to declare their type
   id: "PluginExample",
 
-  // The display name is how the feature is described to the user
-  // eg. when selecting a new widget to create, and in the widget title bar
+  // The display name is the human-friendly name for this feature
   displayName: "Plugin Example",
 
-  /*
-    The ref() helper function registers the Vue component by name, and then returns the name
-    After registering, it can be used as dynamic component
-  
-    Example - the two declarations are equal, but the first can use a variable:
-  
-      <component is="ExampleFeatureWidget" />
-      <ExampleFeatureWidget />
-    */
-
   // The widget is the rectangular card displayed on the dashboard
+  // Register the component with Vue.component(), and use its name here
   widget: "PluginWidget",
 
   // The wizard is responsible for creating new dashboard items for this feature
@@ -61,10 +52,13 @@ const feature = {
     */
 };
 
+// This is the entry point for your plugin.
+// The install function will be called by the BrewBlox UI before starting the Vue app.
+// You can register as many features and components as you want
 export default {
   install(Vue, { store }) {
-    Vue.component(PluginWizard.name, PluginWizard);
-    Vue.component(PluginWidget.name, PluginWidget);
+    Vue.component("PluginWizard", PluginWizard);
+    Vue.component("PluginWidget", PluginWidget);
 
     store.dispatch("features/createFeature", feature);
   }

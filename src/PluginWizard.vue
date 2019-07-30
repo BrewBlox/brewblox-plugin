@@ -9,14 +9,10 @@ export default {
   },
   computed: {
     displayName() {
-      return this.$store.getters["features/displayNameById"](
-        this.$props.featureId
-      );
+      return this.$store.getters["features/displayNameById"](this.featureId);
     },
     defaultWidgetSize() {
-      return this.$store.getters["features/widgetSizeById"](
-        this.$props.featureId
-      );
+      return this.$store.getters["features/widgetSizeById"](this.featureId);
     }
   },
   data: () => ({
@@ -32,13 +28,13 @@ export default {
     createWidget() {
       this.$store
         .dispatch("dashboards/appendDashboardItem", {
-          id: uuid(),
+          id: uuid(), // Must be unique
           title: this.widgetTitle,
           feature: this.featureId,
           dashboard: this.dashboardId,
           order: 0, // automatically set by appendDashboardItem
           config: {
-            url: "https://www.google.com"
+            url: "/datastore"
           },
           ...this.defaultWidgetSize
         })
@@ -60,6 +56,7 @@ export default {
     }
   },
   created() {
+    // Must be done after we have access to the featureId prop
     this.widgetTitle = this.displayName;
   }
 };
