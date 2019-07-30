@@ -3,16 +3,24 @@ import superagent from "superagent";
 
 export default {
   name: "PluginWidget",
+
+  // Props are provided by the dashboard
   props: {
     widget: Object,
     volatile: Boolean
   },
+
   computed: {
     displayName() {
       return this.$store.getters["features/displayNameById"](
         this.widget.feature
       );
     },
+    // A crud is a convenient ball of settings and functions,
+    // that can be passed around to child components such as toolbars and forms
+    // Defined in https://github.com/BrewBlox/brewblox-ui/blob/develop/src/components/Widget/CrudComponent.ts
+    // Explained in https://brewblox.netlify.com/dev/decisions/crud_component.html
+    // Here used by the WidgetActions component.
     crud() {
       return {
         widget: this.widget,
@@ -33,9 +41,11 @@ export default {
       }
     }
   },
+
   data: () => ({
     messages: []
   }),
+
   methods: {
     saveWidget(widget) {
       this.$emit("update:widget", widget);

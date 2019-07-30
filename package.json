@@ -10,8 +10,7 @@
     "*.js"
   ],
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name brewblox-plugin ./src/index.js && cp -rf dist/* out/",
+    "build": "vue-cli-service build --target lib --formats umd,umd-min --name brewblox-plugin ./src/index.js && cp -rf dist/* out/",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
