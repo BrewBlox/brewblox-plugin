@@ -8,6 +8,16 @@ To install the plugins, the [Vue plugin mechanism](https://vuejs.org/v2/guide/pl
 
 In this plugin, the `install()` function can be found in [./src/index.js](./src/index.js).
 
+## Editor
+
+You're free to use whatever editor or IDE you prefer, but we preconfigured some settings for VSCode.
+
+Recommended VSCode plugins:
+- Vetur
+- ESLint
+- Prettier
+- EditorConfig
+
 ## Changing the plugin name
 
 It's recommended you change the plugin name to something other than `brewblox-plugin`. You can do so in [package.json](./package.json). The name occurs multiple times, so it's best to use a search and replace.
@@ -37,9 +47,9 @@ Dashboard items are instances of features. This is the configuration data, and i
 To implement specific functionality, features can offer various Vue components. These components are passed configuration as Vue props, and are expected to emit events when they want to change the configuration.
 
 * To be displayed on a dashboard, a feature must have a widget.
-  * [The example widget](./src/PluginWidget.vue)
+  * [The basic example widget](./src/BasicExample/BasicExampleWidget.vue)
 * To allow the user to create new dashboard items, a feature must have a wizard.
-  * [The example wizard](./src/PluginWizard.vue)
+  * [The example wizard](./src/BasicExample/BasicExampleWizard.vue)
 * For more extensive configuration, features can provide a Form. These are rendered in modal windows. The feature itself is responsible for bringing up a form.
 
 ## Data Management
@@ -50,7 +60,7 @@ The full datastore state is loaded on startup, and all changes are persisted her
 
 Your plugin has full access to the BrewBlox store, but can't use the Typescript wrappers from the brewblox-ui repository.
 
-You can also register your own store module. See the [VueX documentation][vuex-dynamic] on how to do this.
+You can also register your own store module. See [the store example](./src/StoreExample/store.js) for how to do this.
 
 For reference, these are the relevant store modules in brewblox-ui:
 - [dashboards and dashboard items](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/store/dashboards/index.ts)
@@ -78,9 +88,9 @@ Because the plugin is loaded in the BrewBlox UI, you have full access to all Vue
 
 Registered components fall under two groups:
   - Those provided by [Quasar](https://quasar.dev/)
-    - These are easily identified: the component name starts with `q-`, and is `kebab-cased` (eg. `q-item`)
+    - Quasar component names always start with `q-`, and are `kebab-cased` (eg. `q-item`)
   - Those defined in BrewBlox itself (Everything in the [components](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/components) directory).
-    - For convenience, we use `PascalCase` for these components.
+    - For convenience, we use `PascalCase` for local components. This makes it easier to identify local and imported components.
 
 Quasar also offers useful functions added to `this` in Vue components. The most noteworthy are `this.$q.dialog()` and `this.$q.notify()`.
 See the [dialog](https://quasar.dev/quasar-plugins/dialog) and [notify](https://quasar.dev/quasar-plugins/notify) documentation pages for more details.
