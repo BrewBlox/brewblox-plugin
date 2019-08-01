@@ -1,14 +1,14 @@
 // server/index.js
-const express = require("express");
-const path = require("path");
+const express = require('express');
+const path = require('path');
 
 const PORT = 8200;
 
 const app = express();
 
 app.use(
-  express.static(path.resolve(__dirname, "out"), {
-    maxAge: "1s"
+  express.static(path.resolve(__dirname, 'out'), {
+    maxAge: '1s',
   })
 );
 
