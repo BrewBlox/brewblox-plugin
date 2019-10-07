@@ -12,10 +12,10 @@ export default {
   }),
   computed: {
     displayName() {
-      return this.$store.getters['features/displayNameById'](this.featureId);
+      return this.$store.getters['features/displayName'](this.featureId);
     },
     defaultWidgetSize() {
-      return this.$store.getters['features/widgetSizeById'](this.featureId);
+      return this.$store.getters['features/widgetSize'](this.featureId);
     },
   },
   created() {
@@ -31,12 +31,12 @@ export default {
     },
     createWidget() {
       this.$store
-        .dispatch('dashboards/appendDashboardItem', {
+        .dispatch('dashboards/appendPersistentWidget', {
           id: uuid(), // Must be unique
           title: this.widgetTitle,
           feature: this.featureId,
           dashboard: this.dashboardId,
-          order: 0, // automatically set by appendDashboardItem
+          order: 0, // automatically set by appendPersistentWidget
           config: {
             url: '/datastore',
           },
@@ -73,8 +73,8 @@ export default {
     </q-card-section>
 
     <q-card-actions class="row justify-between">
-      <q-btn @click="back" unelevated label="Back" />
-      <q-btn @click="createWidget" unelevated label="Create" color="primary" />
+      <q-btn unelevated label="Back" @click="back" />
+      <q-btn unelevated label="Create" color="primary" @click="createWidget" />
     </q-card-actions>
   </div>
 </template>

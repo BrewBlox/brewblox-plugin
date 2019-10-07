@@ -6,38 +6,69 @@ export default {
 
   // Props are provided by the dashboard
   props: {
-    widget: { type: Object, required: true },
-    volatile: { type: Boolean, default: false },
+    /**
+     * A crud is a convenient ball of settings and functions,
+     * that can be passed around to child components such as toolbars and forms
+     * Defined in https://github.com/BrewBlox/brewblox-ui/blob/develop/src/store/features/types.ts
+     * Explained in https://brewblox.netlify.com/dev/decisions/crud_component.html
+     */
+    initialCrud: { type: Object, required: true },
+
+    /**
+     * The context contains information on how and where the widget is currently rendered.
+     * Defined in https://github.com/BrewBlox/brewblox-ui/blob/develop/src/store/features/types.ts
+     * Explained in https://brewblox.netlify.com/dev/decisions/dynamic_widgets.html
+     *
+     * It has two properties:
+     *  - mode = 'Basic' | 'Full';
+     *  - container = 'Dashboard' | 'Dialog';
+     *
+     * Mode is a hint on how much information should be shown.
+     * Container tells us (among other things) what toolbar we should use.
+     */
+    context: { type: Object, required: true },
   },
 
   data: () => ({
+    activeMode: null,
     localUrl: '',
     messages: [],
   }),
 
   computed: {
     displayName() {
-      return this.$store.getters['features/displayNameById'](this.widget.feature);
+      return this.$store.getters['features/displayName'](this.widget.feature);
     },
-    // A crud is a convenient ball of settings and functions,
-    // that can be passed around to child components such as toolbars and forms
-    // Defined in https://github.com/BrewBlox/brewblox-ui/blob/develop/src/components/Widget/CrudComponent.ts
-    // Explained in https://brewblox.netlify.com/dev/decisions/crud_component.html
-    // Here used by the WidgetActions component.
     crud() {
-      return {
-        widget: this.widget,
-        isStoreWidget: !this.volatile,
-        saveWidget: this.saveWidget,
-        closeDialog: () => { },
-      };
+      return this.initialCrud;
+    },
+    widget() {
+      return this.crud.widget;
     },
     widgetConfig() {
       return this.widget.config;
     },
+    toolbarComponent() {
+      return this.context.container === 'Dialog'
+        ? 'WidgetDialogToolbar'
+        : 'WidgetToolbar';
+    },
+    cardClass() {
+      return this.context.container === 'Dialog'
+        ? ['widget-modal', 'overflow-auto']
+        : ['widget-dashboard', 'overflow-auto', 'scroll'];
+    },
+    mode: {
+      get() {
+        return this.activeMode || this.context.mode;
+      },
+      set(val) {
+        this.activeMode = val;
+      },
+    },
     url: {
       get() {
-        return this.localUrl || this.widget.config.url || '';
+        return this.localUrl || this.widgetConfig.url || '';
       },
       set(url) {
         // We don't want to save widget config every few letters.
@@ -50,7 +81,7 @@ export default {
 
   methods: {
     saveWidget(widget) {
-      this.$emit('update:widget', widget);
+      this.crud.saveWidget(widget);
     },
     saveConfig(config) {
       this.saveWidget({ ...this.widget, config });
@@ -72,9 +103,9 @@ export default {
     alert() {
       // An example notification, triggered by the button on the toolbar
       this.$q.notify({
-        color: 'positive',
+        color: 'info',
         icon: 'mdi-message-alert',
-        message: `Hi! I'm ${this.widget.title}.`,
+        message: `Hi! I'm ${this.displayName} '${this.widget.title}'.`,
       });
     },
   },
@@ -82,24 +113,21 @@ export default {
 </script>
 
 <template>
-  <q-card dark class="text-white scroll">
-    <WidgetToolbar :title="widget.title" :subtitle="displayName">
-      <q-btn-dropdown flat label="actions">
-        <q-list dark bordered>
-          <ActionItem @click="alert" icon="mdi-message-alert" label="Alert" />
-          <WidgetActions :crud="crud" />
-        </q-list>
-      </q-btn-dropdown>
-    </WidgetToolbar>
+  <q-card :class="cardClass" dark>
+    <component :is="toolbarComponent" :crud="crud" :mode.sync="mode">
+      <template v-slot:actions>
+        <ActionItem icon="mdi-message-alert" label="Alert" @click="alert" />
+        <WidgetActions :crud="crud" />
+      </template>
+    </component>
 
     <q-card-section>
-      <!-- The input fields and buttons at the top of the card are defined here -->
       <q-item dark>
         <q-item-section>
           <q-input v-model="url" dark label="URL" />
         </q-item-section>
         <q-item-section class="col-auto">
-          <q-btn @click="fetch" outline label="Fetch" />
+          <q-btn outline label="Fetch" @click="fetch" />
         </q-item-section>
 
         <q-item v-for="(msg, idx) in messages" :key="idx" dark>
@@ -113,10 +141,14 @@ export default {
             {{ msg.content }}
           </q-item-section>
           <q-item-section side>
-            <q-btn @click="removeMessage(idx)" round flat icon="delete" />
+            <q-btn round flat icon="delete" @click="removeMessage(idx)" />
           </q-item-section>
         </q-item>
       </q-item>
+    </q-card-section>
+
+    <q-card-section v-if="mode === 'Full'">
+      Advanced settings go here
     </q-card-section>
   </q-card>
 </template>
