@@ -10,25 +10,26 @@
     "*.js"
   ],
   "scripts": {
+    "devhost": "node server.js",
     "build": "vue-cli-service build --target lib --formats umd,umd-min --name brewblox-plugin ./src/index.js && cp -rf dist/* out/",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^2.6.5",
     "superagent": "^5.1.0",
-    "uuid": "^3.3.2",
+    "uuid": "^3.3.3",
     "vue": "^2.6.10"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.9.0",
-    "@vue/cli-plugin-eslint": "^3.9.0",
-    "@vue/cli-service": "^3.9.0",
-    "babel-eslint": "^10.0.1",
+    "@vue/cli-plugin-babel": "^3.11.0",
+    "@vue/cli-plugin-eslint": "^3.11.0",
+    "@vue/cli-service": "^3.11.0",
+    "babel-eslint": "^10.0.3",
     "eslint": "^5.16.0",
     "eslint-plugin-simple-import-sort": "^4.0.0",
     "eslint-plugin-vue": "^5.0.0",
     "express": "^4.17.1",
-    "vue-eslint-parser": "^6.0.4",
+    "vue-eslint-parser": "^5.0.0",
     "vue-template-compiler": "^2.6.10"
   },
   "postcss": {

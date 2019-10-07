@@ -8,27 +8,26 @@ export default {
   name: 'StoreExampleWidget',
 
   props: {
-    widget: { type: Object, required: true },
-    volatile: { type: Boolean, default: false },
+    initialCrud: { type: Object, required: true },
+    context: { type: Object, required: true },
   },
 
   // We interact directly with the store
   data: () => ({}),
 
   computed: {
-    displayName() {
-      return this.$store.getters['features/displayNameById'](this.widget.feature);
-    },
     crud() {
-      return {
-        widget: this.widget,
-        isStoreWidget: !this.volatile,
-        saveWidget: this.saveWidget,
-        closeDialog: () => { },
-      };
+      return this.initialCrud;
     },
-    widgetConfig() {
-      return this.widget.config;
+    toolbarComponent() {
+      return this.context.container === 'Dialog'
+        ? 'WidgetDialogToolbar'
+        : 'WidgetToolbar';
+    },
+    cardClass() {
+      return this.context.container === 'Dialog'
+        ? ['widget-modal', 'overflow-auto']
+        : ['widget-dashboard', 'overflow-auto', 'scroll'];
     },
     localMessage: {
       get() {
@@ -64,14 +63,9 @@ export default {
 </script>
 
 <template>
-  <q-card dark class="text-white scroll">
-    <WidgetToolbar :title="widget.title" :subtitle="displayName">
-      <q-btn-dropdown flat label="actions">
-        <q-list dark bordered>
-          <WidgetActions :crud="crud" />
-        </q-list>
-      </q-btn-dropdown>
-    </WidgetToolbar>
+  <q-card dark :class="cardClass">
+    <!-- If you don't add the mode property, the toolbar won't show a button -->
+    <component :is="toolbarComponent" :crud="crud" />
 
     <q-card-section>
       <!-- Local message -->
@@ -86,11 +80,11 @@ export default {
         </q-item-section>
         <q-item-section class="col-auto">
           <q-tooltip>Save local message</q-tooltip>
-          <q-btn @click="localMessage = localMessage" flat icon="save" />
+          <q-btn flat icon="save" @click="localMessage = localMessage" />
         </q-item-section>
         <q-item-section class="col-auto">
           <q-tooltip>Delete local message</q-tooltip>
-          <q-btn @click="localMessage = null" flat icon="delete" />
+          <q-btn flat icon="delete" @click="localMessage = null" />
         </q-item-section>
       </q-item>
       <!-- If no local message, show a create button -->
@@ -101,7 +95,7 @@ export default {
         <q-space />
         <q-item-section class="col-auto">
           <q-tooltip>Create local message</q-tooltip>
-          <q-btn @click="createLocal" flat icon="add" />
+          <q-btn flat icon="add" @click="createLocal" />
         </q-item-section>
       </q-item>
 
@@ -115,11 +109,11 @@ export default {
         </q-item-section>
         <q-item-section class="col-auto">
           <q-tooltip>Save store message</q-tooltip>
-          <q-btn @click="saveMessage(msg)" flat icon="save" />
+          <q-btn flat icon="save" @click="saveMessage(msg)" />
         </q-item-section>
         <q-item-section class="col-auto">
           <q-tooltip>Delete store message</q-tooltip>
-          <q-btn @click="removeMessage(msg)" flat icon="delete" />
+          <q-btn flat icon="delete" @click="removeMessage(msg)" />
         </q-item-section>
       </q-item>
 
@@ -134,7 +128,7 @@ export default {
         <q-space />
         <q-item-section class="col-auto">
           <q-tooltip>Create store message</q-tooltip>
-          <q-btn @click="createMessage" flat icon="add" />
+          <q-btn flat icon="add" @click="createMessage" />
         </q-item-section>
       </q-item>
     </q-card-section>

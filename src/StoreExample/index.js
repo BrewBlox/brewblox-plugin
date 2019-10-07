@@ -6,8 +6,8 @@ import StoreExampleWizard from './StoreExampleWizard.vue';
 const feature = {
   id: 'StoreExample',
   displayName: 'Plugin Example (Store)',
-  widget: 'StoreExampleWidget',
-  wizard: 'StoreExampleWizard',
+  widgetComponent: 'StoreExampleWidget',
+  wizardComponent: 'StoreExampleWizard',
   widgetSize: {
     cols: 5,
     rows: 5,
