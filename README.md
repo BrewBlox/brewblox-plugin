@@ -15,7 +15,6 @@ You're free to use whatever editor or IDE you prefer, but we preconfigured some 
 Recommended VSCode plugins:
 - Vetur
 - ESLint
-- Prettier
 - EditorConfig
 
 ## Changing the plugin name
@@ -38,19 +37,18 @@ BrewBlox mostly adheres to the [Vue application structure][vue-structure], but d
 
 Features define the Vue components required to create and display dashboard items. Features must be registered on startup, in the plugin `install()` function.
 
-### Dashboard Item
+### PersistentWidget
 
-Dashboard items are instances of features. This is the configuration data, and is stored in VueX. The widget component has a `DashboardItem` as property. The wizard component is expected to create a `DashboardItem`
+`PersistentWidget` objects are instances of features. This is the configuration data, and is stored in VueX. The widget component is passed the widget as part of the `crud` property.
 
-### Widget, Wizard, Form
+### Widget, Wizard
 
-To implement specific functionality, features can offer various Vue components. These components are passed configuration as Vue props, and are expected to emit events when they want to change the configuration.
+To implement specific functionality, features can register various Vue components. These components are passed configuration as Vue props, and can use provided callbacks to update configuration.
 
 * To be displayed on a dashboard, a feature must have a widget.
   * [The basic example widget](./src/BasicExample/BasicExampleWidget.vue)
-* To allow the user to create new dashboard items, a feature must have a wizard.
-  * [The example wizard](./src/BasicExample/BasicExampleWizard.vue)
-* For more extensive configuration, features can provide a Form. These are rendered in modal windows. The feature itself is responsible for bringing up a form.
+* You can provide a function to generate the configuration for a new wizard.
+  * If your feature needs more specific configuration during setup, you can define a wizard component.
 
 ## Data Management
 
@@ -65,21 +63,21 @@ You can also register your own store module. See [the store example](./src/Store
 For reference, these are the relevant store modules in brewblox-ui:
 - [dashboards and dashboard items](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/store/dashboards/index.ts)
 - [features](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/store/features/index.ts)
-- [history](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/store/history/index.ts)
+- [history](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/plugins/history/store/index.ts)
 - [providers](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/store/providers/index.ts)
 - [services](https://github.com/BrewBlox/brewblox-ui/tree/develop/src/store/services/index.ts)
 
 All modules are namespaced. For example, the Typescript definition for creating dashboard items is:
 ```ts
-@Action({ rawError, commit: 'commitDashboardItem' })
-public async createDashboardItem(item: DashboardItem): Promise<DashboardItem> {
-return await createDashboardItemInApi(item);
+@Action({ rawError, commit: 'commitPersistentWidget' })
+public async createPersistentWidget(widget: PersistentWidget): Promise<PersistentWidget> {
+  return await widgetApi.create(widget);
 }
 ```
 
 In Javascript, you can call this store action using:
 ```js
-this.$store.dispatch('dashboards/createDashboardItem', item);
+this.$store.dispatch('dashboards/createPersistentWidget', item);
 ```
 
 ## Using BrewBlox components

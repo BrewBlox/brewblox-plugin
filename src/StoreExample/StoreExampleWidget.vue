@@ -25,9 +25,16 @@ export default {
         : 'WidgetToolbar';
     },
     cardClass() {
-      return this.context.container === 'Dialog'
-        ? ['widget-modal', 'overflow-auto']
-        : ['widget-dashboard', 'overflow-auto', 'scroll'];
+      const cls = ['overflow-auto'];
+      if (this.context.container === 'Dialog') {
+        cls.push('widget-modal');
+      } else {
+        cls.push('widget-dashboard', 'scroll');
+      }
+      if (this.$dense) {
+        cls.push('widget-dense');
+      }
+      return cls;
     },
     localMessage: {
       get() {
@@ -63,20 +70,16 @@ export default {
 </script>
 
 <template>
-  <q-card dark :class="cardClass">
+  <q-card :class="cardClass">
     <!-- If you don't add the mode property, the toolbar won't show a button -->
     <component :is="toolbarComponent" :crud="crud" />
 
     <q-card-section>
       <!-- Local message -->
-      <q-item v-if="localMessage" dark>
+      <q-item v-if="localMessage">
         <q-item-section>
           <!-- Directly editing a property inside the message does not trigger a store update -->
-          <q-input
-            v-model="localMessage.text"
-            dark
-            label="Edit local message"
-          />
+          <q-input v-model="localMessage.text" label="Edit local message" />
         </q-item-section>
         <q-item-section class="col-auto">
           <q-tooltip>Save local message</q-tooltip>
@@ -88,7 +91,7 @@ export default {
         </q-item-section>
       </q-item>
       <!-- If no local message, show a create button -->
-      <q-item v-else dark>
+      <q-item v-else>
         <q-item-section class="text-grey">
           No local message set
         </q-item-section>
@@ -99,13 +102,13 @@ export default {
         </q-item-section>
       </q-item>
 
-      <q-separator dark inset />
+      <q-separator inset />
 
       <!-- Persistent messages -->
-      <q-item v-for="msg in persistentMessages" :key="msg.id" dark>
+      <q-item v-for="msg in persistentMessages" :key="msg.id">
         <q-item-section>
           <!-- Directly editing a property inside the message does not trigger a store update -->
-          <q-input v-model="msg.text" dark label="Edit store message" />
+          <q-input v-model="msg.text" label="Edit store message" />
         </q-item-section>
         <q-item-section class="col-auto">
           <q-tooltip>Save store message</q-tooltip>
@@ -118,7 +121,7 @@ export default {
       </q-item>
 
       <!-- Creating a new persistent message -->
-      <q-item dark>
+      <q-item>
         <q-item-section
           v-if="persistentMessages.length === 0"
           class="text-grey"
