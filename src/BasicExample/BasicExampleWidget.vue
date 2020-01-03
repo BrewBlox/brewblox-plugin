@@ -54,9 +54,16 @@ export default {
         : 'WidgetToolbar';
     },
     cardClass() {
-      return this.context.container === 'Dialog'
-        ? ['widget-modal', 'overflow-auto']
-        : ['widget-dashboard', 'overflow-auto', 'scroll'];
+      const cls = ['overflow-auto'];
+      if (this.context.container === 'Dialog') {
+        cls.push('widget-modal');
+      } else {
+        cls.push('widget-dashboard', 'scroll');
+      }
+      if (this.$dense) {
+        cls.push('widget-dense');
+      }
+      return cls;
     },
     mode: {
       get() {
@@ -113,24 +120,23 @@ export default {
 </script>
 
 <template>
-  <q-card :class="cardClass" dark>
+  <q-card :class="cardClass">
     <component :is="toolbarComponent" :crud="crud" :mode.sync="mode">
-      <template v-slot:actions>
+      <template #actions>
         <ActionItem icon="mdi-message-alert" label="Alert" @click="alert" />
-        <WidgetActions :crud="crud" />
       </template>
     </component>
 
     <q-card-section>
-      <q-item dark>
+      <q-item>
         <q-item-section>
-          <q-input v-model="url" dark label="URL" />
+          <q-input v-model="url" label="URL" />
         </q-item-section>
         <q-item-section class="col-auto">
           <q-btn outline label="Fetch" @click="fetch" />
         </q-item-section>
 
-        <q-item v-for="(msg, idx) in messages" :key="idx" dark>
+        <q-item v-for="(msg, idx) in messages" :key="idx">
           <q-item-section avatar>
             <q-icon :name="msg.ok ? 'check_circle' : 'error'" />
           </q-item-section>
@@ -147,8 +153,10 @@ export default {
       </q-item>
     </q-card-section>
 
-    <q-card-section v-if="mode === 'Full'">
-      Advanced settings go here
+    <q-card-section v-if="mode === 'Full'" class="text-center">
+      <q-separator />
+      This section is only shown in full mode.<br>
+      Advanced settings go here.
     </q-card-section>
   </q-card>
 </template>
