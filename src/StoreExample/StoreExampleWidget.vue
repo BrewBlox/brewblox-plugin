@@ -24,18 +24,6 @@ export default {
         ? 'WidgetDialogToolbar'
         : 'WidgetToolbar';
     },
-    cardClass() {
-      const cls = ['overflow-auto'];
-      if (this.context.container === 'Dialog') {
-        cls.push('widget-modal');
-      } else {
-        cls.push('widget-dashboard', 'scroll');
-      }
-      if (this.$dense) {
-        cls.push('widget-dense');
-      }
-      return cls;
-    },
     localMessage: {
       get() {
         return this.$store.state.example.localMessage;
@@ -70,9 +58,11 @@ export default {
 </script>
 
 <template>
-  <q-card :class="cardClass">
-    <!-- If you don't add the mode property, the toolbar won't show a button -->
-    <component :is="toolbarComponent" :crud="crud" />
+  <CardWrapper :context="context">
+    <template #toolbar>
+      <!-- If you don't add the mode property, the toolbar won't show a button -->
+      <component :is="toolbarComponent" :crud="crud" />
+    </template>
 
     <q-card-section>
       <!-- Local message -->
@@ -135,5 +125,5 @@ export default {
         </q-item-section>
       </q-item>
     </q-card-section>
-  </q-card>
+  </CardWrapper>
 </template>

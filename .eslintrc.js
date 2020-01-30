@@ -23,7 +23,13 @@ module.exports = {
         'avoidEscape': true,
       },
     ],
-    'vue/max-attributes-per-line': 0,
+    'vue/max-attributes-per-line': ['warn', {
+      'singleline': 8,
+      'multiline': {
+        'max': 1,
+        'allowFirstLine': false
+      },
+    }],
     'vue/html-self-closing': 0,
     'comma-dangle': [
       'error',
