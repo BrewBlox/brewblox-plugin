@@ -2,7 +2,7 @@ const Vue = window.Vue;
 const dbModuleId = 'store-example';
 
 // See https://vuex.vuejs.org/guide/ for a full guide on how to use VueX modules
-// See https://github.com/BrewBlox/brewblox-ui/blob/develop/src/plugins/database.ts for the database spec
+// See https://github.com/BrewBlox/brewblox-ui/blob/develop/src/plugins/database/types.ts for the database spec
 
 /*
 * Datastore objects must implement the StoreObject interface
@@ -57,7 +57,7 @@ export const exampleModule = {
     },
 
     async createPersistent(context, msg) {
-      const created = await Vue.database.create(dbModuleId, msg);
+      const created = await Vue.$database.create(dbModuleId, msg);
       context.commit('commitPersistent', created);
     },
 
@@ -65,23 +65,23 @@ export const exampleModule = {
       if (!msg._rev) {
         throw new Error("Can't save a message without revision ID (_rev)");
       }
-      const saved = await Vue.database.persist(dbModuleId, msg);
+      const saved = await Vue.$database.persist(dbModuleId, msg);
       context.commit('commitPersistent', saved);
     },
 
     async removePersistent(context, msg) {
-      const removed = await Vue.database.remove(dbModuleId, msg);
+      const removed = await Vue.$database.remove(dbModuleId, msg);
       context.commit('commitRemovePersistent', removed);
     },
 
-    async setup(context, database) {
+    async start(context) {
       // Initial fetch to populate the VueX store
-      const messages = await Vue.database.fetchAll(dbModuleId);
+      const messages = await Vue.$database.fetchAll(dbModuleId);
       context.commit('commitAllPersistent', messages);
 
-      // Register the database module
       // The onChanged / onDeleted callbacks will keep the store synchronized
-      await database.registerModule({
+      // Try it out by opening the UI in two browser tabs
+      await Vue.$database.subscribe({
         id: dbModuleId,
         onChanged: async (msg) => {
           // The update may have been triggered here
